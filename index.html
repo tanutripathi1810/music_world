@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music World</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 50%, #1e88e5 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .user-avatar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: #7986cb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Navigation */
+        .nav-menu {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Section Container */
+        .section {
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '→';
+            font-size: 20px;
+        }
+
+        /* Album Grid */
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            padding: 10px 0;
+        }
+
+        .album-item {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .album-item:hover {
+            transform: scale(1.05) translateY(-5px);
+        }
+
+        .album-cover {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(45deg, #2196f3, #21cbf3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Different album cover styles */
+        .album-cover.movie1 {
+            background: linear-gradient(45deg, #1a237e, #3949ab);
+        }
+
+        .album-cover.movie2 {
+            background: linear-gradient(45deg, #424242, #757575);
+        }
+
+        .album-cover.movie3 {
+            background: linear-gradient(45deg, #d32f2f, #f44336);
+        }
+
+        .album-cover.game1 {
+            background: linear-gradient(45deg, #ff5722, #ff9800);
+        }
+
+        .album-cover.game2 {
+            background: linear-gradient(45deg, #4caf50, #8bc34a);
+        }
+
+        .album-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .album-item:hover .album-cover::before {
+            opacity: 1;
+        }
+
+        .album-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px;
+            font-size: 10px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .album-item:hover .album-title {
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .nav-menu {
+                justify-content: center;
+            }
+
+            .nav-btn {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+
+            .album-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 10px;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+        }
+
+        /* Scroll animation */
+        .section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Play button overlay */
+        .play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+
+        .play-btn::before {
+            content: '▶';
+            color: #333;
+            font-size: 16px;
+            margin-left: 2px;
+        }
+
+        .album-item:hover .play-btn {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Music World</h1>
+            
+            
+            <div class="nav-menu">
+                <button class="nav-btn active">HOME</button>
+                <button class="nav-btn">ABOUT US</button>
+                <button class="nav-btn">CATEGORY ↓</button>
+                <button class="nav-btn">PRODUCTION</button>
+                <button class="nav-btn">GALLERY</button>
+                <button class="nav-btn">CONTACT US</button>
+                <button class="nav-btn">LOGIN</button>
+            </div>
+        </div>
+
+        <!-- Latest Album Section -->
+        <div class="section">
+            <div class="section-title">Latest Album ...</div>
+            <div class="album-grid">
+                <div class="album-item">
+                    <div class="album-cover movie1">
+                        <span>Movie Soundtrack</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">Latest Release</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover movie2">
+                        <span>Action Movie</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">Action Hits</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover movie3">
+                        <span>Romance</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">Love Songs</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover game1">
+                        <span>Angry Birds</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">Game Music</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover game2">
+                        <span>Adventure</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">Epic Soundtrack</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover movie1">
+                        <span>Drama</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">Emotional</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover movie2">
+                        <span>Thriller</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">Suspense</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover movie3">
+                        <span>Comedy</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">Fun Music</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOP 10 Songs Section -->
+        <div class="section">
+            <div class="section-title">TOP 10 Songs ...</div>
+            <div class="album-grid">
+                <div class="album-item">
+                    <div class="album-cover game1">
+                        <span>Angry Birds Theme</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">#1 Hit</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover game2">
+                        <span>Adventure Song</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">#2 Popular</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover movie1">
+                        <span>Movie Hit</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">#3 Trending</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover movie2">
+                        <span>Drama Theme</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">#4 Classic</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover movie1">
+                        <span>Romance</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">#5 Love</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover movie2">
+                        <span>Action Beat</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">#6 Energy</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover movie3">
+                        <span>Emotional</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">#7 Deep</div>
+                </div>
+                <div class="album-item">
+                    <div class="album-cover movie3">
+                        <span>Party Mix</span>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="album-title">#8 Dance</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top 10 Artist Section -->
+        <div class="section">
+            <div class="section-title">Top 10 Artist ...</div>
+            <div class="album-grid">
+                <!-- This section can be expanded with artist content -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Album click functionality
+        document.querySelectorAll('.album-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('play-btn')) {
+                    // Add click animation
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                }
+            });
+        });
+
+        // Play button functionality
+        document.querySelectorAll('.play-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // Add play animation
+                this.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                setTimeout(() => {
+                    this.style.transform = 'translate(-50%, -50%) scale(1)';
+                }, 150);
+                
+                // Simulate play action
+                const albumTitle = this.parentElement.parentElement.querySelector('.album-title');
+                if (albumTitle) {
+                    const originalText = albumTitle.textContent;
+                    albumTitle.textContent = '♪ Playing...';
+                    setTimeout(() => {
+                        albumTitle.textContent = originalText;
+                    }, 2000);
+                }
+            });
+        });
+
+        // Add parallax effect to background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.body;
+            const speed = scrolled * 0.5;
+            parallax.style.backgroundPosition = `center ${speed}px`;
+        });
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0.2s';
+                    entry.target.classList.add('animate');
+                }
+            });
+        });
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
